@@ -2,6 +2,7 @@ from circleshape import CircleShape
 from constants import ASTEROID_MIN_RADIUS
 import pygame
 import random
+import math
 
 class Asteroid(CircleShape):
     score = 0
@@ -9,7 +10,15 @@ class Asteroid(CircleShape):
         super().__init__(x, y, radius)
     
     def draw(self, screen):
-        pygame.draw.circle(screen, color="white", center=self.position, radius=self.radius, width=2)
+        points = []
+        for i in range(10):  # number of "edges" -> more = smoother asteroid
+            angle = i * (2 * math.pi / 10)
+            r = self.radius + random.randint(-5, 5)  # randomize shape
+            x = self.position[0] + r * math.cos(angle)
+            y = self.position[1] + r * math.sin(angle)
+            points.append((x, y))
+
+        pygame.draw.polygon(screen, (255, 255, 255), points, width=2)
 
     def update(self, dt):
         self.position += self.velocity * dt
